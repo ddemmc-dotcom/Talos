@@ -146,4 +146,5 @@ src/modules/       the 38 tool modules + nmap/metasploit engine wrappers
 src/orchestrator.py, src/runner/, src/models/, src/errors/   engine internals
 scripts/           standalone runners + self-test
 ```
-Please note that the whole project is made with the help of an ai so there can be mistakes. If something breaks please report it. Thank you
+Please note that the whole project is made with the help of an ai so there can be mistakes. If something breaks please report it. Thank you.
+For now the support is only for Linux and it needs a internet connection for most of the modules to work and so it can download things like nmap. metasplot and other!
