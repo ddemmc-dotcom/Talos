@@ -32,6 +32,12 @@
 # =============================================================================
 set -euo pipefail
 
+# --- cross-platform detection ------------------------------------------------
+if [[ "$OSTYPE" == "msys" ]] || [[ "$OSTYPE" == "cygwin" ]] || [[ "$OSTYPE" == "win32" ]] || command -v cmd.exe >/dev/null 2>&1; then
+    echo "[ERROR] This is a Linux/macOS installer. Use install.ps1 on Windows."
+    exit 1
+fi
+
 # --- hard requirements -------------------------------------------------------
 MIN_PYTHON_MAJOR=3
 MIN_PYTHON_MINOR=10
@@ -54,7 +60,7 @@ NO_OS_PKGS=0
 UNINSTALL=0
 
 usage() {
-    sed -n '2,40p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+    sed -n '2,28p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
     echo
     echo "Options:"
     echo "  --user          install per-user under ~/.local (no root required)"
@@ -372,4 +378,12 @@ ${C_GREEN}${C_BOLD}Done! ${TOOL_NAME} is installed globally.${C_RESET}
   * Re-run this installer any time to refresh dependencies (idempotent).
   * To remove everything:  $0 --uninstall
 EOF
+
+# --- cleanup: remove the Windows installer -----------------------------------
+if [ -f "$SOURCE_DIR/install.ps1" ]; then
+    info "Removing Windows installer (install.ps1)..."
+    rm -f "$SOURCE_DIR/install.ps1"
+    ok "Removed install.ps1"
+fi
+
 exit 0
