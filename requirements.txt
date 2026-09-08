@@ -1,0 +1,20 @@
+# Multi-tool framework - Python 3.10+
+# ---------------------------------------------------------------------------
+# NOTE: the `nmap` *binary* itself is provided by the OS package manager
+# (apt install nmap / brew install nmap / choco install nmap) and is located
+# via shutil.which(); it is NOT installed through pip. The nmap engine runs
+# the binary directly and parses its XML output with the standard library,
+# so no python-nmap / xmltodict wrappers are required.
+# pymetasploit3 provides the Metasploit RPC bridge, pydantic backs the
+# ToolResult model, python-dotenv loads MSF_RPC_* config and textual powers
+# the terminal UI.
+pymetasploit3
+pydantic>=2.0
+python-dotenv
+textual>=0.60
+
+# Menu-driven multi-tool (TALOS) — see src/core and src/modules
+requests>=2.31
+dnspython>=2.5
+cryptography>=41
+colorama>=0.4.6

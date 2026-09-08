@@ -1,0 +1,18 @@
+# Virtual environment (created for first-run auto-install verification)
+.venv/
+
+# Runtime artifacts (created on first run)
+logs/
+
+# Python caches
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Local environment config
+.env
+
+# Test/tooling caches
+.pytest_cache/
+.coverage
+htmlcov/
