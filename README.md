@@ -1,7 +1,7 @@
 # TALOS — terminal multi-tool
 
 A keyboard-driven, all-in-one reconnaissance / OSINT / utility / attack
-console for Linux. Everything runs through one flat numbered module list, a
+console for **Linux and Windows**. Everything runs through one flat numbered module list, a
 full-screen Textual UI, or standalone scripts — all backed by the same
 engine, logging and audit trail.
 
@@ -32,12 +32,18 @@ python main.py     # numbered menu
 python ui.py       # keyboard-driven UI (auto-installs missing deps)
 ```
 
-## Global install (one executable)
+## Global install
 
-`install.sh` is a self-contained installer that detects your distro,
-installs the OS binaries (`nmap`, `traceroute`, `ping`, python ≥ 3.10 +
-venv), copies the source to an install prefix, creates a virtualenv with all
-Python dependencies, and registers global `talos` / `talos-ui` commands:
+TALOS includes installers for both Linux and Windows. Each installer
+detects the wrong OS and shows an error message pointing to the correct
+installer. After a successful install, the unused installer is removed.
+
+### Linux / macOS
+
+`install.sh` detects your distro, installs OS binaries (`nmap`, `traceroute`,
+`ping`, python ≥ 3.10 + venv), copies source to an install prefix, creates
+a virtualenv with all Python dependencies, and registers global `talos` /
+`talos-ui` commands:
 
 ```bash
 ./install.sh           # auto: system-wide when run as root/sudo, else per-user
@@ -53,7 +59,37 @@ Environment overrides: `PREFIX=`, `BIN_DIR=`, `PYTHON=` (e.g.
 `main.py` re-checks / re-installs any missing pip package on every launch,
 so the installed venv self-heals.
 
-Once installed:
+### Windows
+
+`install.ps1` is a PowerShell script that verifies Python 3.10+, installs
+`nmap` via `winget` (if available), creates a virtualenv, installs Python
+dependencies, and creates global `talos.bat` / `talos-ui.bat` launchers:
+
+```powershell
+.\install.ps1              # default install (per-user, no admin needed)
+.\install.ps1 -User        # install under %LOCALAPPDATA%\talos
+.\install.ps1 -System      # install system-wide under C:\talos (requires admin)
+.\install.ps1 -NoOSPkgs    # skip nmap installation
+.\install.ps1 -Uninstall   # remove the install + launchers
+.\install.ps1 -Help        # show help
+```
+
+The installer adds the launcher directory to your user PATH automatically.
+You may need to restart your terminal or run `refreshenv` for PATH changes
+to take effect.
+
+### Cross-platform detection
+
+Both installers detect the wrong OS and show a helpful error:
+
+| Run on | Error message |
+|--------|---------------|
+| `install.sh` on Windows | `Use install.ps1 on Windows` |
+| `install.ps1` on Linux/macOS | `Use install.sh on Linux/macOS` |
+
+After a successful install, the unused installer is automatically removed.
+
+### Once installed
 
 ```bash
 talos        # numbered menu, from any directory
@@ -142,7 +178,8 @@ degradation) and drives all 39 menu modules with scripted input. Exit code
 ```
 main.py            numbered menu CLI (self-heals missing pip packages)
 ui.py              Textual UI launcher (bootstraps deps, then runs)
-install.sh         one-file global installer (system-wide or per-user)
+install.sh         Linux/macOS global installer (system-wide or per-user)
+install.ps1        Windows global installer (PowerShell, per-user or system)
 src/core/          menu engine, context, formatting, tables, progress, reports
 src/modules/       the 39 tool modules + nmap/metasploit engine wrappers
 src/orchestrator.py, src/runner/, src/models/, src/errors/   engine internals
