@@ -14,9 +14,9 @@ engine, logging and audit trail.
 
 | Entry point        | What it is                                                        |
 | ------------------ | ----------------------------------------------------------------- |
-| `talos` / `main.py`  | Numbered **menu CLI** — the default global command (39 modules) |
+| `talos` / `main.py`  | Numbered **menu CLI** — the default global command (40 modules) |
 | `talos-ui` / `ui.py` | Full-screen **keyboard-driven UI** (arrow keys + Ctrl+S to run) |
-| `scripts/…`          | Standalone runners: `nmap_vuln.py`, `http_bruteforce.py`, `auto_audit.py`, `msf_run.py` |
+| `scripts/…`          | Standalone runners: `nmap_vuln.py`, `http_bruteforce.py`, `auto_audit.py`, `msf_run.py`, `data_scraper.py` |
 | `src/orchestrator.py`| Engine: module discovery, immutable Context, safe execution, audit |
 
 Every module returns a structured `ToolResult`; the same report renderer
@@ -112,7 +112,7 @@ Start the daemon with `msfrpcd -P <password> -a 127.0.0.1 -p 55553`.
 Every other module degrades gracefully when a binary or service is absent —
 they surface a clean diagnostic instead of crashing.
 
-## The 39 menu modules
+## The 40 menu modules
 
 Flat numbered list, one number = one module (no categories, no sub-menus):
 
@@ -137,6 +137,7 @@ Flat numbered list, one number = one module (no categories, no sub-menus):
 18 VHOST Scanner              37 Nmap Vulnerability Scan
 19 Web Directory Bruteforcer  38 Auto Vulnerability Audit
                                39 Metasploit Module Runner
+                               40 Data Scraper
 ```
 
 ## Logs & audit trail
@@ -159,7 +160,16 @@ python scripts/http_bruteforce.py https://host/login --user admin \
     --passwords-file words.txt
 python scripts/auto_audit.py <target> [--ports 22,80] [--os-detect]
 python scripts/msf_run.py scanner/portscan/tcp --target 10.0.0.5 --option THREADS=10
+python scripts/data_scraper.py --port 8080 --redirect https://example.com [--qrcode] [--ngrok]
 ```
+
+Module 40 (Data Scraper) opens a new terminal window that serves a blank
+diagnostics page (nothing visible to the visitor) on **all interfaces** — it
+prints the machine's LAN URL so every device on the network can connect —
+and streams every connection into that window as structured logs. On startup
+it runs a blocker check (self-reachability, ngrok, OS firewall) and stays
+online until the window is closed; port-forward it (e.g. `ssh -R`, or
+`--ngrok` for a public URL).
 
 ## Tests
 
@@ -168,10 +178,10 @@ python scripts/self_test.py           # full run (needs network for some modules
 python scripts/self_test.py --no-net  # skip internet-only modules
 ```
 
-The self-test exercises the four engine modules for real (nmap on localhost,
+The self-test exercises the five engine modules for real (nmap on localhost,
 brute-force against a local mock HTTP server, Metasploit graceful
-degradation) and drives all 39 menu modules with scripted input. Exit code
-0 = no failures.
+degradation, the data scraper server) and drives all 40 menu modules with
+scripted input. Exit code 0 = no failures.
 
 ## Layout
 
@@ -181,7 +191,7 @@ ui.py              Textual UI launcher (bootstraps deps, then runs)
 install.sh         Linux/macOS global installer (system-wide or per-user)
 install.ps1        Windows global installer (PowerShell, per-user or system)
 src/core/          menu engine, context, formatting, tables, progress, reports
-src/modules/       the 39 tool modules + nmap/metasploit engine wrappers
+src/modules/       the 40 tool modules + nmap/metasploit engine wrappers
 src/orchestrator.py, src/runner/, src/models/, src/errors/   engine internals
 scripts/           standalone runners + self-test
 ```

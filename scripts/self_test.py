@@ -14,7 +14,7 @@ Two layers are verified:
    path the TUI and scripts use), so context validation + auditing are
    covered too.
 
-2. **CLI menu modules** (the 39 functions behind the numbered menu) are each
+2. **CLI menu modules** (the 40 functions behind the numbered menu) are each
    driven with a scripted answer stream (real targets for scanners/finders,
    meaningful inputs for the utilities) while stdout is captured. A module
    PASSes when it completes without an uncaught exception; network hiccups
@@ -354,7 +354,7 @@ def _run_engine_tests() -> None:
 
 
 # ---------------------------------------------------------------------------
-# tier 2: CLI menu modules (38)
+# tier 2: CLI menu modules (40)
 # ---------------------------------------------------------------------------
 # Answers are keyed by exact menu title. Modules absent from this map get an
 # empty stream (EOF) which they must handle gracefully — a clean "no target /
@@ -402,6 +402,10 @@ _MENU_ANSWERS: Dict[str, List[str]] = {
     "Nmap Vulnerability Scan": [],
     "Auto Vulnerability Audit": ["127.0.0.1", "22,80", "n", "", "60"],
     "Metasploit Module Runner": [],
+    # Interactive: the wrapper spawns a hosting terminal only in a real
+    # TTY session; under the scripted run it prints the manual command
+    # instead, so the answers just cover the configuration prompts.
+    "Data Scraper": ["8123", "https://example.com", "n", "n", "n"],
 }
 
 #: internet-dependent titles that get skipped under --no-net
