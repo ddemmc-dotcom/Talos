@@ -16,7 +16,7 @@ engine, logging and audit trail.
 | ------------------ | ----------------------------------------------------------------- |
 | `talos` / `main.py`  | Numbered **menu CLI** — the default global command (40 modules) |
 | `talos-ui` / `ui.py` | Full-screen **keyboard-driven UI** (arrow keys + Ctrl+S to run) |
-| `scripts/…`          | Standalone runners: `nmap_vuln.py`, `http_bruteforce.py`, `auto_audit.py`, `msf_run.py`, `data_scraper.py` |
+| `scripts/…`          | Standalone runners: `nmap_vuln.py`, `http_bruteforce.py`, `auto_audit.py`, `msf_run.py`, `data_scraper.py`, `seeker.py` |
 | `src/orchestrator.py`| Engine: module discovery, immutable Context, safe execution, audit |
 
 Every module returns a structured `ToolResult`; the same report renderer
@@ -161,6 +161,7 @@ python scripts/http_bruteforce.py https://host/login --user admin \
 python scripts/auto_audit.py <target> [--ports 22,80] [--os-detect]
 python scripts/msf_run.py scanner/portscan/tcp --target 10.0.0.5 --option THREADS=10
 python scripts/data_scraper.py --port 8080 --redirect https://example.com [--qrcode] [--ngrok]
+python scripts/seeker.py --template NearYou --port 8080
 ```
 
 Module 40 (Data Scraper) opens a new terminal window that serves a blank
@@ -170,6 +171,27 @@ and streams every connection into that window as structured logs. On startup
 it runs a blocker check (self-reachability, ngrok, OS firewall) and stays
 online until the window is closed; port-forward it (e.g. `ssh -R`, or
 `--ngrok` for a public URL).
+
+### Seeker module
+
+The Seeker integration is a Talos wrapper around the bundled upstream Seeker
+project. Talos starts the upstream process as a background subprocess and
+shows its output in one operator-visible `Talos Seeker Console`; the upstream
+tool does not open a second terminal. Missing Git, PHP, or Python dependencies
+are checked and installed when possible before launch.
+
+Run it from the menu or directly:
+
+```bash
+python scripts/seeker.py --template NearYou --port 8080
+python scripts/seeker.py --template Telegram --port 8080 --tunnel
+```
+
+The console prints the local URL (`127.0.0.1`), the LAN URL when available,
+startup status, and structured upstream output. Use `127.0.0.1:<port>` on the
+same machine or the printed LAN address from another device on the same
+network. `0.0.0.0` is only a server bind address and should not be entered in
+a browser. Closing the Talos Seeker console stops the hosting process.
 
 ## Tests
 

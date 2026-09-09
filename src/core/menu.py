@@ -148,6 +148,7 @@ def _build_modules() -> List[Dict[str, Any]]:
     from src.modules import security as security_mod
     from src.modules import attack as attack_mod
     from src.modules import data_scraper as data_scraper_mod
+    from src.modules import seeker as seeker_mod
 
     # (title, function) — the order below is the number you type.
     specs: List[tuple] = [
@@ -195,6 +196,7 @@ def _build_modules() -> List[Dict[str, Any]]:
         ("Auto Vulnerability Audit", attack_mod.menu_auto_audit),
         ("Metasploit Module Runner", attack_mod.menu_metasploit),
         ("Data Scraper", data_scraper_mod.menu_data_scraper),
+        ("Seeker Social Engineering Page", seeker_mod.menu_seeker),
     ]
     modules: List[Dict[str, Any]] = []
     for index, (title, func) in enumerate(specs, start=1):
